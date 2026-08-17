@@ -1,1 +1,17 @@
 
+-- Schema for Sales Data Warehouse
+
+CREATE TABLE sales (
+    id SERIAL PRIMARY KEY,          -- Auto-increment ID
+    date DATE NOT NULL,             -- Transaction date
+    product VARCHAR(100) NOT NULL,  -- Product name
+    branch VARCHAR(50) NOT NULL,    -- Branch identifier
+    sales_rep VARCHAR(50) NOT NULL, -- Sales representative
+    revenue NUMERIC(12,2) NOT NULL, -- Revenue amount
+    quantity INT NOT NULL           -- Units sold
+);
+
+-- Optional: Indexes for faster queries
+CREATE INDEX idx_sales_date ON sales(date);
+CREATE INDEX idx_sales_branch ON sales(branch);
+CREATE INDEX idx_sales_rep ON sales(sales_rep);
