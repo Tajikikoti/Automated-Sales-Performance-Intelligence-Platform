@@ -1,1 +1,27 @@
 
+-- sales_kpi_model.sql
+-- dbt model to calculate key sales KPIs
+
+WITH base AS (
+    SELECT
+        date,
+        branch,
+        sales_rep,
+        product,
+        revenue,
+        quantity
+    FROM {{ ref('sales') }}   -- reference to your raw sales table
+)
+
+SELECT
+    branch,
+    sales_rep,
+    SUM(revenue) AS total_revenue,
+    SUM(quantity) AS total_units,
+    AVG(revenue) AS avg_revenue_per_sale,
+    COUNT(DISTINCT product) AS product_count,
+    COUNT(*) AS transactions,
+    DATE_TRUNC('month', date) AS month
+FROM base
+GROUP BY branch, sales_rep, DATE_TRUNC('month', date)
+ORDER BY month, branch, sales_rep;
