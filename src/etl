@@ -1,11 +1,11 @@
-
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 import pandas as pd
+import psycopg2
 
 def extract_data():
-    # Example: read from CSV (replace with API calls)
+    # Example: read from CSV (replace with API calls later)
     df = pd.read_csv('/data/sample_pos.csv')
     return df.to_dict()
 
@@ -17,9 +17,30 @@ def transform_data(**context):
 
 def load_data(**context):
     df = pd.DataFrame(context['ti'].xcom_pull(task_ids='transform'))
-    # Example: load into PostgreSQL
-    # Replace with psycopg2 or SQLAlchemy connection
-    print("Loading data into warehouse...")
+
+    # Connect to PostgreSQL
+    conn = psycopg2.connect(
+        host="localhost",       # replace with your DB host
+        database="sales_db",    # replace with your DB name
+        user="postgres",        # replace with your DB user
+        password="yourpassword" # replace with your DB password
+    )
+    cur = conn.cursor()
+
+    # Insert rows into sales table
+    for _, row in df.iterrows():
+        cur.execute(
+            """
+            INSERT INTO sales (date, product, branch, sales_rep, revenue, quantity)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+            (row['date'], row['product'], row['branch'], row['sales_rep'], row['Revenue'], row['Quantity'])
+        )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    print("Data successfully loaded into PostgreSQL!")
 
 with DAG(
     dag_id="sales_pipeline_dag",
