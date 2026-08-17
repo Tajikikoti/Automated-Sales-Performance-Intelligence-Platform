@@ -1,1 +1,67 @@
 
+Total Revenue = SUM(sales[revenue])
+
+Revenue Target Achievement = 
+DIVIDE(
+    SUM(sales[revenue]),
+    SELECTEDVALUE(kpi_targets[RevenueTarget]),
+    0
+)
+
+pipeline conversion
+Pipeline Conversion Rate = 
+DIVIDE(
+    COUNTROWS(FILTER(sales, sales[stage] = "Closed")),
+    COUNTROWS(FILTER(sales, sales[stage] = "Opportunity")),
+    0
+)
+
+sales REp Comparison
+Revenue per Rep = 
+SUMX(
+    VALUES(sales[sales_rep]),
+    CALCULATE(SUM(sales[revenue]))
+)
+
+Units per Rep = 
+SUMX(
+    VALUES(sales[sales_rep]),
+    CALCULATE(SUM(sales[quantity]))
+)
+
+Branch comparison
+Revenue by Branch = 
+SUMX(
+    VALUES(sales[branch]),
+    CALCULATE(SUM(sales[revenue]))
+)
+
+Avg Deal Size = 
+DIVIDE(
+    SUM(sales[revenue]),
+    COUNTROWS(sales),
+    0
+)
+
+Product Analysis
+Revenue by Product = SUM(sales[revenue])
+
+Units Sold by Product = SUM(sales[quantity])
+
+Top Products = 
+TOPN(
+    10,
+    SUMMARIZE(sales, sales[product], "Revenue", SUM(sales[revenue])),
+    [Revenue],
+    DESC
+)
+
+Alerts
+Low Pipeline Alert = 
+IF([Pipeline Conversion Rate] < 0.20, "ALERT: Low Conversion", "OK")
+
+Revenue Drop Alert = 
+IF([Total Revenue] < SELECTEDVALUE(kpi_targets[RevenueTarget]), "ALERT: Revenue Below Target", "OK")
+
+
+
