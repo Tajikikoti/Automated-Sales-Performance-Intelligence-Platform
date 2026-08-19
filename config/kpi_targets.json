@@ -1,1 +1,35 @@
 
+{
+  "RevenueGrowth": {
+    "target": 0.10,
+    "description": "Target 10% revenue growth compared to previous period"
+  },
+  "SalesConversionRate": {
+    "target": 0.25,
+    "description": "Target 25% of leads converted into paying customers"
+  },
+  "AverageDealSize": {
+    "target": 5000,
+    "description": "Target average deal size of $5,000"
+  },
+  "SalesCycleLength": {
+    "target": 30,
+    "description": "Target average of 30 days to close a deal"
+  },
+  "QuotaAttainment": {
+    "target": 0.80,
+    "description": "Target 80% of sales reps meeting or exceeding quota"
+  },
+  "CustomerRetentionRate": {
+    "target": 0.90,
+    "description": "Target 90% of customers retained over the period"
+  },
+  "ChurnRate": {
+    "target": 0.05,
+    "description": "Target maximum 5% customer churn"
+  },
+  "WinRate": {
+    "target": 0.40,
+    "description": "Target 40% of opportunities converted into wins"
+  }
+}
