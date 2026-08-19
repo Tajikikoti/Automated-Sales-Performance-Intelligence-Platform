@@ -1,17 +1,41 @@
-
--- Schema for Sales Data Warehouse
-
+-- Sales table (main fact table)
 CREATE TABLE sales (
-    id SERIAL PRIMARY KEY,          -- Auto-increment ID
-    date DATE NOT NULL,             -- Transaction date
-    product VARCHAR(100) NOT NULL,  -- Product name
-    branch VARCHAR(50) NOT NULL,    -- Branch identifier
-    sales_rep VARCHAR(50) NOT NULL, -- Sales representative
-    revenue NUMERIC(12,2) NOT NULL, -- Revenue amount
-    quantity INT NOT NULL           -- Units sold
+    sale_id SERIAL PRIMARY KEY,
+    date DATE NOT NULL,
+    product VARCHAR(255),
+    branch VARCHAR(100),
+    sales_rep VARCHAR(100),
+    revenue NUMERIC(12,2),
+    quantity INT
 );
 
--- Optional: Indexes for faster queries
-CREATE INDEX idx_sales_date ON sales(date);
-CREATE INDEX idx_sales_branch ON sales(branch);
-CREATE INDEX idx_sales_rep ON sales(sales_rep);
+-- Customers table
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    signup_date DATE
+);
+
+-- Products table
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(255),
+    category VARCHAR(100),
+    unit_price NUMERIC(12,2)
+);
+
+-- Branches table
+CREATE TABLE branches (
+    branch_id SERIAL PRIMARY KEY,
+    branch_name VARCHAR(100),
+    region VARCHAR(100)
+);
+
+-- KPI results table
+CREATE TABLE kpi_results (
+    kpi_id SERIAL PRIMARY KEY,
+    kpi_name VARCHAR(100),
+    kpi_value NUMERIC(12,2),
+    calculation_date DATE
+);
