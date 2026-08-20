@@ -1,8 +1,8 @@
-
 from fastapi import FastAPI
 import psycopg2
 import pandas as pd
 import json
+import os
 
 app = FastAPI()
 
@@ -25,12 +25,25 @@ def get_kpi_targets():
 @app.get("/sales")
 def get_sales(limit: int = 10):
     try:
-        conn = psycopg2.connect(
-            host="localhost",       # replace with your DB host
-            database="sales_db",    # replace with your DB name
-            user="postgres",        # replace with your DB user
-            password="yourpassword" # replace with your DB password
-        )
+        # Prefer a full DATABASE_URL if provided (e.g., from Render or Heroku)
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            conn = psycopg2.connect(database_url)
+        else:
+            host = os.getenv("DB_HOST", "localhost")
+            database = os.getenv("DB_NAME", "sales_db")
+            user = os.getenv("DB_USER", "postgres")
+            password = os.getenv("DB_PASSWORD", "yourpassword")
+            port = os.getenv("DB_PORT", "5432")
+
+            conn = psycopg2.connect(
+                host=host,
+                database=database,
+                user=user,
+                password=password,
+                port=port
+            )
+
         cur = conn.cursor()
         cur.execute("SELECT * FROM sales LIMIT %s;", (limit,))
         rows = cur.fetchall()
@@ -45,7 +58,7 @@ def get_sales(limit: int = 10):
                 "product": row[2],
                 "branch": row[3],
                 "sales_rep": row[4],
-                "revenue": float(row[5]),
+                "revenue": float(row[5]) if row[5] is not None else None,
                 "quantity": row[6]
             })
         return {"sales": sales_data}
